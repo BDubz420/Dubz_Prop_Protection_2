@@ -138,6 +138,28 @@ local function createExtraModuleDemo(parent)
     progress:SetPos(12, 62)
     progress:SetSize(280, 20)
 
+    local statA = DUIF.CreateStatTile(card, {
+        title = "Latency",
+        value = "12ms",
+        subtitle = "Current tick response",
+        icon = "◉",
+        tall = 86,
+        margin = {0, 0, 0, 0}
+    })
+    statA:SetPos(12, 92)
+    statA:SetSize(136, 86)
+
+    local statB = DUIF.CreateStatTile(card, {
+        title = "Players",
+        value = "128",
+        subtitle = "Peak in last hour",
+        icon = "◎",
+        tall = 86,
+        margin = {0, 0, 0, 0}
+    })
+    statB:SetPos(156, 92)
+    statB:SetSize(136, 86)
+
     local tabs = DUIF.CreateTabs(card)
     tabs:SetPos(304, 58)
     tabs:SetSize(380, 144)
@@ -164,15 +186,15 @@ local function createExtraModuleDemo(parent)
         startOpen = false,
         contentTall = 72
     })
-    coll:SetPos(694, 58)
-    coll:SetSize(270, 106)
+    coll:SetPos(694, 52)
+    coll:SetSize(270, 112)
 
     local modalBtn = DUIF.CreateButton(card, "Open Modal", "primary", {
         onClick = function()
             DUIF.CreateModal("DUIF Modal", "This is a reusable modal dialog component.")
         end
     })
-    modalBtn:SetPos(694, 170)
+    modalBtn:SetPos(694, 176)
     modalBtn:SetSize(130, 32)
 
     snippet(parent, "CreateProgressBar / CreateTabs / CreateCollapsible / CreateModal")
@@ -203,6 +225,16 @@ function DUIF.OpenShowcase()
         DUIF.DrawGradient(0, 0, w, 3, DUIF.GetColor("Accent"), DUIF.GetColor("AccentAlt"), true)
         draw.SimpleText("Dubz UI Framework", "DUIF.Title", 12, 8, DUIF.GetColor("Text"), TEXT_ALIGN_LEFT)
         draw.SimpleText("Reusable Derma toolkit with modular components, themes, and animations.", "DUIF.Body", 12, 46, DUIF.GetColor("TextMuted"), TEXT_ALIGN_LEFT)
+    end
+
+    local b1 = DUIF.CreateBadge(headWrap, "Reusable", "primary")
+    local b2 = DUIF.CreateBadge(headWrap, "Theme Aware", "success")
+    local b3 = DUIF.CreateBadge(headWrap, "Animated", "muted")
+
+    headWrap.PerformLayout = function(self, w, h)
+        b1:SetPos(w - 300, 12)
+        b2:SetPos(w - 206, 12)
+        b3:SetPos(w - 110, 12)
     end
 
     createButtonDemo(body)

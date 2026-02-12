@@ -22,7 +22,7 @@ end
 function DUIF.DrawGradient(x, y, w, h, startCol, endCol, horizontal)
     if w <= 0 or h <= 0 then return end
 
-    local steps = 28
+    local steps = math.Clamp(math.floor((horizontal and w or h) / 5), 36, 160)
 
     for i = 0, steps do
         local t = i / steps

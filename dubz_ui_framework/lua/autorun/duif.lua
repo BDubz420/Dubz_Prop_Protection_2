@@ -25,6 +25,8 @@ if SERVER then
         "duif/components/cl_tabs.lua",
         "duif/components/cl_modal.lua",
         "duif/components/cl_collapsible.lua",
+        "duif/components/cl_badge.lua",
+        "duif/components/cl_stattile.lua",
         "duif/docs/cl_showcase.lua"
     }
 
