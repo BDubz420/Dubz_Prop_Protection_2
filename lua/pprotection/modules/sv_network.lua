@@ -1,13 +1,13 @@
-DPP2 = DPP2 or {}
+DPP = DPP or {}
 
-util.AddNetworkString("DPP2.OpenMenu")
-util.AddNetworkString("DPP2.ConfigSnapshot")
-util.AddNetworkString("DPP2.Action")
+util.AddNetworkString("DPP.OpenMenu")
+util.AddNetworkString("DPP.ConfigSnapshot")
+util.AddNetworkString("DPP.Action")
 
 local function getDashboardSnapshot()
     return {
-        version = DPP2.Version,
-        config = DPP2.Config,
+        version = DPP.Version,
+        config = DPP.Config,
         stats = {
             players = #player.GetHumans(),
             entities = #ents.GetAll(),
@@ -17,25 +17,25 @@ local function getDashboardSnapshot()
     }
 end
 
-concommand.Add("dpp2_menu", function(ply)
-    if IsValid(ply) and not DPP2:HasAccess(ply, "openmenu") then return end
+concommand.Add("dpp_menu", function(ply)
+    if IsValid(ply) and not DPP:HasAccess(ply, "openmenu") then return end
 
     if IsValid(ply) then
-        net.Start("DPP2.OpenMenu")
+        net.Start("DPP.OpenMenu")
             net.WriteTable(getDashboardSnapshot())
         net.Send(ply)
     end
 end)
 
-net.Receive("DPP2.Action", function(_, ply)
-    if not DPP2:HasAccess(ply, "openmenu") then return end
+net.Receive("DPP.Action", function(_, ply)
+    if not DPP:HasAccess(ply, "openmenu") then return end
 
     local mode = net.ReadString()
     local targetSid = net.ReadString()
     local action = net.ReadString()
 
     if mode == "global" then
-        DPP2:GlobalAction(ply, action)
+        DPP:GlobalAction(ply, action)
         return
     end
 
@@ -48,10 +48,10 @@ net.Receive("DPP2.Action", function(_, ply)
     end
 
     if IsValid(target) then
-        DPP2:RunEntityAction(ply, target, action)
+        DPP:RunEntityAction(ply, target, action)
     end
 end)
 
-hook.Add("InitPostEntity", "DPP2.Boot", function()
-    DPP2:BootModules()
+hook.Add("InitPostEntity", "DPP.Boot", function()
+    DPP:BootModules()
 end)

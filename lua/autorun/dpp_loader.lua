@@ -1,4 +1,4 @@
-DPP2 = DPP2 or {}
+DPP = DPP or {}
 
 local sharedFiles = {
     "pprotection/sh_core.lua",

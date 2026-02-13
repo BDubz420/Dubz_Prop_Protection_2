@@ -1,6 +1,6 @@
-DPP2 = DPP2 or {}
+DPP = DPP or {}
 
-DPP2.Ownership = DPP2.Ownership or {
+DPP.Ownership = DPP.Ownership or {
     entityOwners = {},
     steamEntityIndex = {},
     transferLog = {}
@@ -8,42 +8,42 @@ DPP2.Ownership = DPP2.Ownership or {
 
 local ENTITY = FindMetaTable("Entity")
 
-function ENTITY:DPP2SetOwner(ply)
+function ENTITY:DPPSetOwner(ply)
     if not IsValid(self) then return end
 
     if IsValid(ply) and ply:IsPlayer() then
-        self:SetNWString("DPP2OwnerSID", ply:SteamID64() or "")
-        self:SetNWString("DPP2OwnerName", ply:Nick())
-        DPP2.Ownership.entityOwners[self:EntIndex()] = ply:SteamID64()
+        self:SetNWString("DPPOwnerSID", ply:SteamID64() or "")
+        self:SetNWString("DPPOwnerName", ply:Nick())
+        DPP.Ownership.entityOwners[self:EntIndex()] = ply:SteamID64()
 
-        DPP2.Ownership.steamEntityIndex[ply:SteamID64()] = DPP2.Ownership.steamEntityIndex[ply:SteamID64()] or {}
-        DPP2.Ownership.steamEntityIndex[ply:SteamID64()][self:EntIndex()] = true
+        DPP.Ownership.steamEntityIndex[ply:SteamID64()] = DPP.Ownership.steamEntityIndex[ply:SteamID64()] or {}
+        DPP.Ownership.steamEntityIndex[ply:SteamID64()][self:EntIndex()] = true
     else
-        self:SetNWString("DPP2OwnerSID", "")
-        self:SetNWString("DPP2OwnerName", "world")
-        DPP2.Ownership.entityOwners[self:EntIndex()] = nil
+        self:SetNWString("DPPOwnerSID", "")
+        self:SetNWString("DPPOwnerName", "world")
+        DPP.Ownership.entityOwners[self:EntIndex()] = nil
     end
 end
 
-function ENTITY:DPP2GetOwnerSID64()
-    local sid = self:GetNWString("DPP2OwnerSID", "")
+function ENTITY:DPPGetOwnerSID64()
+    local sid = self:GetNWString("DPPOwnerSID", "")
     if sid ~= "" then return sid end
-    return DPP2.Ownership.entityOwners[self:EntIndex()]
+    return DPP.Ownership.entityOwners[self:EntIndex()]
 end
 
-function ENTITY:DPP2IsOwnedBy(ply)
+function ENTITY:DPPIsOwnedBy(ply)
     if not IsValid(ply) then return false end
-    local sid = self:DPP2GetOwnerSID64()
+    local sid = self:DPPGetOwnerSID64()
     return sid ~= nil and sid ~= "" and sid == ply:SteamID64()
 end
 
-function DPP2:CanInteractWithEntity(ply, ent)
+function DPP:CanInteractWithEntity(ply, ent)
     if not IsValid(ply) or not IsValid(ent) then return false end
     if self:CanBypass(ply, {"admin", "superadmin"}) then return true end
 
-    if ent:DPP2IsOwnedBy(ply) then return true end
+    if ent:DPPIsOwnedBy(ply) then return true end
 
-    local ownerSid = ent:DPP2GetOwnerSID64()
+    local ownerSid = ent:DPPGetOwnerSID64()
     if not ownerSid or ownerSid == "" then return self.Config.canProperty.canTargetWorldEntities end
 
     local trusted = self.Config.ownership.trust.permanent[ownerSid]
@@ -52,27 +52,27 @@ function DPP2:CanInteractWithEntity(ply, ent)
     return false
 end
 
-hook.Add("PlayerSpawnedProp", "DPP2.Ownership.Prop", function(ply, model, ent)
+hook.Add("PlayerSpawnedProp", "DPP.Ownership.Prop", function(ply, model, ent)
     if IsValid(ent) then
-        ent:DPP2SetOwner(ply)
+        ent:DPPSetOwner(ply)
     end
 end)
 
-hook.Add("PlayerSpawnedSENT", "DPP2.Ownership.Sent", function(ply, ent)
+hook.Add("PlayerSpawnedSENT", "DPP.Ownership.Sent", function(ply, ent)
     if IsValid(ent) then
-        ent:DPP2SetOwner(ply)
+        ent:DPPSetOwner(ply)
     end
 end)
 
-hook.Add("PlayerDisconnected", "DPP2.Ownership.TrackDisconnect", function(ply)
-    DPP2:Log("disconnect", "Tracking disconnected owner entities for cleanup", ply)
+hook.Add("PlayerDisconnected", "DPP.Ownership.TrackDisconnect", function(ply)
+    DPP:Log("disconnect", "Tracking disconnected owner entities for cleanup", ply)
 end)
 
-hook.Add("EntityRemoved", "DPP2.Ownership.CleanupIndex", function(ent)
+hook.Add("EntityRemoved", "DPP.Ownership.CleanupIndex", function(ent)
     if not IsValid(ent) then return end
-    local sid = ent:DPP2GetOwnerSID64()
-    if sid and DPP2.Ownership.steamEntityIndex[sid] then
-        DPP2.Ownership.steamEntityIndex[sid][ent:EntIndex()] = nil
+    local sid = ent:DPPGetOwnerSID64()
+    if sid and DPP.Ownership.steamEntityIndex[sid] then
+        DPP.Ownership.steamEntityIndex[sid][ent:EntIndex()] = nil
     end
-    DPP2.Ownership.entityOwners[ent:EntIndex()] = nil
+    DPP.Ownership.entityOwners[ent:EntIndex()] = nil
 end)

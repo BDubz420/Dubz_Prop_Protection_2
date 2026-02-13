@@ -1,4 +1,4 @@
-DPP2 = DPP2 or {}
+DPP = DPP or {}
 
 local iconMap = {
     Core = "🏠",
@@ -133,7 +133,7 @@ local categories = {
                 fields = {
                     {"Logging enabled", "toggle", "logging.enabled"},
                     {"Staff notification throttle", "label", "logging.staffNotifyThrottle"},
-                    {"Action history viewer", "label", "Backed by file dpp2/logs.txt"},
+                    {"Action history viewer", "label", "Backed by file dpp/logs.txt"},
                     {"Violation monitor", "label", "Available in right live panel"}
                 }
             }
@@ -170,8 +170,8 @@ local function addFieldRow(parent, data, config)
         b:SetSize(66, 24)
         b:SetPos(390, 4)
         b.OnClick = function()
-            local sid = IsValid(DPP2.SelectedPlayer) and DPP2.SelectedPlayer:SteamID64() or ""
-            net.Start("DPP2.Action")
+            local sid = IsValid(DPP.SelectedPlayer) and DPP.SelectedPlayer:SteamID64() or ""
+            net.Start("DPP.Action")
                 net.WriteString("player")
                 net.WriteString(sid)
                 net.WriteString(data[3])
@@ -182,7 +182,7 @@ local function addFieldRow(parent, data, config)
         b:SetSize(66, 24)
         b:SetPos(390, 4)
         b.OnClick = function()
-            net.Start("DPP2.Action")
+            net.Start("DPP.Action")
                 net.WriteString("global")
                 net.WriteString("")
                 net.WriteString(data[3])
@@ -200,13 +200,13 @@ local function addFieldRow(parent, data, config)
     end
 end
 
-function DPP2.OpenDashboard(snapshot)
-    if IsValid(DPP2.Frame) then DPP2.Frame:Remove() end
+function DPP.OpenDashboard(snapshot)
+    if IsValid(DPP.Frame) then DPP.Frame:Remove() end
 
     local config = snapshot.config or {}
 
     local frame = DUIF.CreateFrame("Dubz Prop Protection", 1320, 820)
-    DPP2.Frame = frame
+    DPP.Frame = frame
 
     local topBar = vgui.Create("DPanel", frame)
     topBar:Dock(TOP)
@@ -270,7 +270,7 @@ function DPP2.OpenDashboard(snapshot)
     end
 
     pList.OnSelect = function(_, _, _, data)
-        DPP2.SelectedPlayer = data
+        DPP.SelectedPlayer = data
     end
 
     local cards = {}
@@ -314,11 +314,11 @@ function DPP2.OpenDashboard(snapshot)
     end
 end
 
-net.Receive("DPP2.OpenMenu", function()
+net.Receive("DPP.OpenMenu", function()
     local snapshot = net.ReadTable()
-    DPP2.OpenDashboard(snapshot)
+    DPP.OpenDashboard(snapshot)
 end)
 
-concommand.Add("dpp2_open", function()
-    RunConsoleCommand("dpp2_menu")
+concommand.Add("dpp_open", function()
+    RunConsoleCommand("dpp_menu")
 end)

@@ -1,6 +1,6 @@
-DPP2 = DPP2 or {}
+DPP = DPP or {}
 
-DPP2.Config = {
+DPP.Config = {
     core = {
         enabled = true,
         cleanupBatchSize = 60,
